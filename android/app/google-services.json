@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "678623065090",
+    "project_id": "edkaryfir",
+    "storage_bucket": "edkaryfir.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678623065090:android:7fa88be772c53bf8a0231b",
+        "android_client_info": {
+          "package_name": "com.example.edkarymeslime"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvVwRy73tHGMrPqzJ-ONfJiOKQZDJ47Uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
