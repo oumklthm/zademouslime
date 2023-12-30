@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edkarymeslime/deae.dart';
+import 'package:edkarymeslime/edkar.dart';
 import 'package:edkarymeslime/elquerane.dart';
 import 'package:edkarymeslime/sebaha.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +24,90 @@ class Hompage extends StatefulWidget {
 
 class _MyWidgetState extends State<Hompage> {
   List<Widget> itemsData = [];
+  String prayerDuaa = "Loading...";
+  Future<void> printAllPrayerDuaa() async {
+    try {
+      // Récupérer tous les documents de la collection "deaee"
+      QuerySnapshot deaeeSnapshot =
+          await FirebaseFirestore.instance.collection('deaee').get();
+
+      // Parcourir tous les documents et imprimer le champ "prayerDuaa"
+      deaeeSnapshot.docs.forEach((doc) {
+        String prayerDuaa = doc['prayerDuaa'] ?? "Prayer duaa not found";
+        print('Prayer Duaa: $prayerDuaa');
+      });
+    } catch (error) {
+      print("Error printing all prayerDuaa: $error");
+    }
+  }
+
+  void updatePrayerDuaa() async {
+    try {
+      // Récupérer tous les documents de la collection "deaee"
+      QuerySnapshot deaeeSnapshot =
+          await FirebaseFirestore.instance.collection('deaee').get();
+
+      // Vérifier si la collection contient des documents
+      if (deaeeSnapshot.docs.isNotEmpty) {
+        // Choisir un document au hasard (vous pouvez ajuster cela selon vos besoins)
+        final randomIndex = Random().nextInt(deaeeSnapshot.docs.length);
+        final randomDoc = deaeeSnapshot.docs[randomIndex];
+
+        // Extraire le champ prayerDuaa du document
+        final fetchedPrayerDuaa =
+            randomDoc['prayerDuaa'] ?? "Prayer duaa not found";
+
+        // Mettre à jour la variable prayerDuaa avec la valeur récupérée
+        setState(() {
+          prayerDuaa = fetchedPrayerDuaa;
+        });
+
+        // Imprimer le message dans la console
+        DateTime now = DateTime.now();
+        print('Updated prayerDuaa at $now: $fetchedPrayerDuaa');
+      } else {
+        // Si la collection est vide, afficher un message approprié
+        setState(() {
+          prayerDuaa = "Prayer duaa not found";
+        });
+      }
+    } catch (error) {
+      // En cas d'erreur, imprimer l'erreur et afficher un message d'erreur
+      print("Error updating prayerDuaa: $error");
+      setState(() {
+        prayerDuaa = "An error occurred while updating prayerDuaa";
+      });
+    }
+  }
+
+  Future<String> fetchPrayerDuaa() async {
+    try {
+      // Récupérer les données de la collection "deaee" en ordre aléatoire
+      QuerySnapshot deaeeSnapshot = await FirebaseFirestore.instance
+          .collection('deaee')
+          .orderBy('createdAt', descending: true)
+          .limit(1)
+          .get();
+
+      if (deaeeSnapshot.docs.isNotEmpty) {
+        var data = deaeeSnapshot.docs[0].data() as Map<String, dynamic>?;
+
+        // Vérifier si le champ prayerDuaa existe et n'est pas nul
+        if (data != null &&
+            data.containsKey('prayerDuaa') &&
+            data['prayerDuaa'] != null) {
+          return data['prayerDuaa'];
+        } else {
+          return "Prayer duaa not found";
+        }
+      } else {
+        return "Prayer duaa not found";
+      }
+    } catch (error) {
+      print("Error fetching prayerDuaa: $error");
+      return "An error occurred while fetching prayerDuaa";
+    }
+  }
 
   Future<List<FirebaseData>> fetchData() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -39,42 +127,56 @@ class _MyWidgetState extends State<Hompage> {
   @override
   void initState() {
     super.initState();
+    print('initState called');
+    //      Timer.periodic(const Duration(minutes: 1), (timer) {
+    //   updatePrayerDuaa();
+    // });
+    printAllPrayerDuaa();
     fetchData().then((data) {
       print('Data: $data');
       setState(() {
         itemsData = data.map((item) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              height: 60,
-              decoration: BoxDecoration(
+            padding: const EdgeInsets.all(3.0),
+            child: Card(
+              margin: EdgeInsets.all(20.0),
+              elevation: 8.0,
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    blurRadius: 3.0,
-                  ),
-                ],
-                border: Border.all(
-                  width: 1,
-                  color: Color.fromARGB(255, 34, 140, 144),
-                ),
               ),
-              child: Row(
-                children: [
-                  Image.network(item.logoUrl,
-                      width: 50, height: 50), // Assuming your logoUrl is a URL
-                  SizedBox(width: 10),
-                  Text(
-                    item.Title,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
+              color: Colors.grey[50],
+              borderOnForeground: true,
+              child: SizedBox(
+                height: 60,
+                child: Row(
+                  children: [
+                    Image.network(
+                      item.logoUrl,
+                      width: 60,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ), // Assuming your logoUrl is a URL
+                    const SizedBox(width: 190),
+                    Text(
+                      item.Title,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         }).toList();
       });
+    });
+    // Appelez la fonction pour mettre à jour le duaa de prière toutes les 2 minutes
+
+    Timer.periodic(const Duration(minutes: 1), (timer) {
+      updatePrayerDuaa();
     });
   }
 
@@ -89,30 +191,28 @@ class _MyWidgetState extends State<Hompage> {
             body: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Container(
-                    // width: 400,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      // borderRadius: BorderRadius.circular(15.0),
-                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(248, 255, 255, 255),
-                          blurRadius: 3.0,
-                        ),
-                      ],
-                      border: Border.all(
-                        width: 1,
-                        color: const Color.fromARGB(255, 7, 121, 111),
-                      ),
+                  padding: EdgeInsets.all(5.0),
+                  child: Card(
+                    margin: EdgeInsets.all(20.0),
+                    elevation: 8.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: const Center(
-                      child: Text(
-                        "Prière",
-                        style: TextStyle(fontSize: 20),
+                    color: Colors.grey[50],
+                    borderOnForeground: true,
+                    child: SizedBox(
+                      height: 150,
+                      child: Center(
+                        child: Text(
+                          prayerDuaa,
+                          style: const TextStyle(
+                              fontSize: 24,
+                              fontStyle: FontStyle.normal,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   ),
@@ -130,37 +230,39 @@ class _MyWidgetState extends State<Hompage> {
                       },
                       child: Container(
                         width: 200,
-                        margin: EdgeInsets.only(right: 20),
+                        margin: EdgeInsets.only(right: 25),
                         height: 100,
                         decoration: BoxDecoration(
                             color: Colors.green.shade200,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12.0))),
-                        child: const Padding(
+                        child: Padding(
                           padding: EdgeInsets.all(12.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              //  Icon(Icons.search, color: Colors.black),
-                              Icon(
-                                Icons.book_sharp,
-                                size: 15,
-                                color: Color.fromARGB(255, 20, 125, 160),
-                              ),
-                              Text(
-                                "القرآن \nالكريم",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                              Image.asset(
+                                  'assetes/images/mashav.png', // Remplacez par le chemin correct de votre image
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover
+
+                                  // color: Color.fromARGB(255, 20, 125, 160),
+                                  ),
+                              Center(
+                                child: Text(
+                                  // TextAlign.Alignment.bottomLeft,
+                                  "القرآن \nالكريم",
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900),
+                                ),
                               ),
                               SizedBox(
                                 height: 10,
                               ),
-                              // Text(
-                              //   "20 Items",
-                              //   style: TextStyle(fontSize: 10, color: Colors.white),
-                              // ),
                             ],
                           ),
                         ),
@@ -170,42 +272,45 @@ class _MyWidgetState extends State<Hompage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const sebaha()),
+                          MaterialPageRoute(builder: (context) => sebaha()),
                         );
                       },
                       child: Container(
                         width: 200,
-                        margin: EdgeInsets.only(right: 20),
+                        margin: const EdgeInsets.only(right: 20),
                         height: 100,
                         // height: categoryHeight,
                         decoration: BoxDecoration(
-                            color: Colors.blue.shade400,
+                            color: Color.fromARGB(255, 87, 130, 164),
                             borderRadius:
-                                BorderRadius.all(Radius.circular(20.0))),
-                        child: Container(
-                          child: const Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
+                                const BorderRadius.all(Radius.circular(20.0))),
+                        child: Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Image.asset(
+                                  'assetes/images/tesbih2.jpg', // Remplacez par le chemin correct de votre image
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover
+
+                                  // color: Color.fromARGB(255, 20, 125, 160),
+                                  ),
+                              Center(
+                                child: Text(
                                   "السبحة\nالألكترونيه ",
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 30,
+                                      fontStyle: FontStyle.normal,
                                       color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                      fontWeight: FontWeight.w900),
                                 ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  "33",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.white),
-                                ),
-                              ],
-                            ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -225,17 +330,29 @@ class _MyWidgetState extends State<Hompage> {
                             color: Colors.lightBlueAccent.shade400,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
-                        child: const Padding(
+                        child: Padding(
                           padding: EdgeInsets.all(12.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(
-                                "الدعاء",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                              Image.asset(
+                                  'assetes/images/mashav.png', // Remplacez par le chemin correct de votre image
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover
+
+                                  // color: Color.fromARGB(255, 20, 125, 160),
+                                  ),
+
+                              Center(
+                                child: Text(
+                                  "الدعاء",
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      fontStyle: FontStyle.normal,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900),
+                                ),
                               ),
                               SizedBox(
                                 height: 10,
@@ -254,53 +371,29 @@ class _MyWidgetState extends State<Hompage> {
                 const SizedBox(
                   height: 10,
                 ),
-
                 const Text(
                   "قائمة الأذكار",
-                  style: TextStyle(fontSize: 26),
+                  style: TextStyle(
+                    fontSize: 26,
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-
-                // SizedBox(
-                //   height: 400,
-                //   child: ListView.builder(
-                //     itemCount: 4,
-                //     itemBuilder: (BuildContext context, int index) {
-                //       return Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: Container(
-                //           height: 60,
-
-                //           decoration: BoxDecoration(
-                //             borderRadius: BorderRadius.circular(20.0),
-                //             boxShadow:  [
-                //               BoxShadow(
-                //                color: Color.fromARGB(255, 255, 255, 255),
-                //                 blurRadius: 3.0,
-                //               ),
-                //             ],
-                //             border: Border.all(
-                //               width: 1,
-                //                color: Color.fromARGB(255, 34, 140, 144),
-                //             ),
-                //           ),
-                //           // child: const Center(
-                //           //   child: Text(
-                //           //     "Prière",
-                //           //     style: TextStyle(fontSize: 20),
-                //           //   ),
-                //           // ),
-                //         ),
-                //       );
-                //     },
-                //   ),
-                // ),
-                SizedBox(
-                  height: 400,
-                  child: ListView.builder(
-                    itemCount: itemsData.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return itemsData[index];
-                    },
+                InkWell(
+                  onTap: () async {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const Edkar(),
+                      ),
+                    );
+                  },
+                  child: SizedBox(
+                    height: 300,
+                    child: ListView.builder(
+                      itemCount: itemsData.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return itemsData[index];
+                      },
+                    ),
                   ),
                 ),
               ],
