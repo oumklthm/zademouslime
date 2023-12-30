@@ -7,9 +7,34 @@ class Edkar extends StatefulWidget {
   State<Edkar> createState() => _MyWidgetState();
 }
 
+class Item {
+  final String Title; // Assurez-vous que le nom est correct
+  const Item({required this.Title});
+}
+
 class _MyWidgetState extends State<Edkar> {
+  List<String> extractArray(String title) {
+    List<String> titleParts = title.split("|");
+
+    if (titleParts.length == 2) {
+      String count = titleParts[0].trim();
+      String contenu = titleParts[1].trim();
+
+      return [count, contenu];
+    }
+
+    return [];
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Exemple de données pour illustrer la structure de itemsData
+    List<Item> itemsData = [
+      Item(Title: "2 | Contenu 1"),
+      Item(Title: "5 | Contenu 2"),
+      // ... Ajoutez d'autres éléments ici
+    ];
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -34,13 +59,7 @@ class _MyWidgetState extends State<Edkar> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  // Text("Résultat de la ",
-                  //     style: TextStyle(
-                  //       fontSize: 24,
-                  //       fontStyle: FontStyle.normal,
-                  //     )),
-                  SizedBox(height: 5), // Espace entre les deux parties du contenu
-                  // Contenu du deuxième conteneur
+                  SizedBox(height: 5),
                   Container(
                     height: 59,
                     width: 350,
@@ -54,14 +73,18 @@ class _MyWidgetState extends State<Edkar> {
                       ),
                     ),
                     padding: const EdgeInsets.all(20),
-                    child: const Column(
-                      children: [
-                        // Text("Résultat de la ",
-                        //     style: TextStyle(
-                        //       fontSize: 24,
-                        //       fontStyle: FontStyle.normal,
-                        //     )),
-                      ],
+                    child: InkWell(
+                      onTap: () {
+                        // Utilisez la fonction extractArray pour obtenir le contenu et le count.
+                        List<String> array = extractArray(itemsData[0].Title); // Assurez-vous d'accéder au bon élément
+                        // Imprimez les données extraites dans la console.
+                        print("Count: ${array[0]}, Contenu: ${array[1]}");
+                      },
+                      child: const Column(
+                        children: [
+                          // Ajoutez vos widgets ici.
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -73,4 +96,3 @@ class _MyWidgetState extends State<Edkar> {
     );
   }
 }
-

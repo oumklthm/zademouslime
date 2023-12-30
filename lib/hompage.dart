@@ -321,7 +321,7 @@ class _MyWidgetState extends State<Hompage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => deae()),
+                          MaterialPageRoute(builder: (context) => requea()),
                         );
                       },
                       child: Container(
@@ -348,7 +348,7 @@ class _MyWidgetState extends State<Hompage> {
 
                               const Center(
                                 child: Text(
-                                  "الدعاء",
+                                  "الرقية \n الشرعية",
                                   style: TextStyle(
                                       fontSize: 30,
                                       fontStyle: FontStyle.normal,
