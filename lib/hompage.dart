@@ -128,9 +128,7 @@ class _MyWidgetState extends State<Hompage> {
   void initState() {
     super.initState();
     print('initState called');
-    //      Timer.periodic(const Duration(minutes: 1), (timer) {
-    //   updatePrayerDuaa();
-    // });
+   
     printAllPrayerDuaa();
     fetchData().then((data) {
       print('Data: $data');
@@ -139,10 +137,10 @@ class _MyWidgetState extends State<Hompage> {
           return Padding(
             padding: const EdgeInsets.all(3.0),
             child: Card(
-              margin: EdgeInsets.all(20.0),
+              margin: EdgeInsets.all(10.0),
               elevation: 8.0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius: BorderRadius.circular(8.0),
               ),
               color: Colors.grey[50],
               borderOnForeground: true,
@@ -150,13 +148,16 @@ class _MyWidgetState extends State<Hompage> {
                 height: 60,
                 child: Row(
                   children: [
-                    Image.network(
-                      item.logoUrl,
-                      width: 60,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    ), // Assuming your logoUrl is a URL
-                    const SizedBox(width: 190),
+                     Align(
+                         alignment: Alignment.center,
+                       child: Image.network(
+                        item.logoUrl,
+                        width: 60,
+                        height: 50,
+                        fit: BoxFit.cover,
+                                         ),
+                     ), 
+                    const SizedBox(width: 180),
                     Text(
                       item.Title,
                       style: const TextStyle(
@@ -193,20 +194,21 @@ class _MyWidgetState extends State<Hompage> {
               children: [
                 const SizedBox(height: 10),
                 Padding(
-                  padding: EdgeInsets.all(5.0),
+                  padding: const EdgeInsets.all(5.0),
                   child: Card(
                     margin: EdgeInsets.all(20.0),
                     elevation: 8.0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
-                    color: Colors.grey[50],
+                    color: Colors.white,
                     borderOnForeground: true,
                     child: SizedBox(
                       height: 150,
                       child: Center(
                         child: Text(
                           prayerDuaa,
+                            textAlign: TextAlign.center, 
                           style: const TextStyle(
                               fontSize: 24,
                               fontStyle: FontStyle.normal,
@@ -230,12 +232,12 @@ class _MyWidgetState extends State<Hompage> {
                       },
                       child: Container(
                         width: 200,
-                        margin: EdgeInsets.only(right: 25),
+                        margin: const EdgeInsets.only(right: 25),
                         height: 100,
-                        decoration: BoxDecoration(
-                            color: Colors.green.shade200,
+                        decoration:const BoxDecoration(
+                            color: Color.fromRGBO(178, 208, 255, 1),
                             borderRadius:
-                                BorderRadius.all(Radius.circular(12.0))),
+                                BorderRadius.all(Radius.circular(30.0))),
                         child: Padding(
                           padding: EdgeInsets.all(12.0),
                           child: Column(
@@ -281,9 +283,9 @@ class _MyWidgetState extends State<Hompage> {
                         height: 100,
                         // height: categoryHeight,
                         decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 87, 130, 164),
+                            color: Colors.deepPurple.shade100,
                             borderRadius:
-                                const BorderRadius.all(Radius.circular(20.0))),
+                                const BorderRadius.all(Radius.circular(30.0))),
                         child: Padding(
                           padding: EdgeInsets.all(12.0),
                           child: Column(
@@ -327,9 +329,9 @@ class _MyWidgetState extends State<Hompage> {
                         margin: EdgeInsets.only(right: 20),
                         height: 100,
                         decoration: BoxDecoration(
-                            color: Colors.lightBlueAccent.shade400,
+                            color: Colors.deepOrange.shade100,
                             borderRadius:
-                                BorderRadius.all(Radius.circular(20.0))),
+                                BorderRadius.all(Radius.circular(30.0))),
                         child: Padding(
                           padding: EdgeInsets.all(12.0),
                           child: Column(
@@ -344,7 +346,7 @@ class _MyWidgetState extends State<Hompage> {
                                   // color: Color.fromARGB(255, 20, 125, 160),
                                   ),
 
-                              Center(
+                              const Center(
                                 child: Text(
                                   "الدعاء",
                                   style: TextStyle(
@@ -369,14 +371,18 @@ class _MyWidgetState extends State<Hompage> {
                   ]),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 6,
                 ),
                 const Text(
+                    textAlign: TextAlign.right,
                   "قائمة الأذكار",
                   style: TextStyle(
                     fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    fontStyle: FontStyle.normal,
+                    
                   ),
-                  textAlign: TextAlign.left,
+                 
                 ),
                 InkWell(
                   onTap: () async {
@@ -387,7 +393,7 @@ class _MyWidgetState extends State<Hompage> {
                     );
                   },
                   child: SizedBox(
-                    height: 300,
+                    height: 360,
                     child: ListView.builder(
                       itemCount: itemsData.length,
                       itemBuilder: (BuildContext context, int index) {
