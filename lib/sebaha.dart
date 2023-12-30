@@ -25,12 +25,12 @@ class _sebahaSate extends State<sebaha> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          elevation: 20,
+          elevation: 0,
           backgroundColor: Color.fromARGB(255, 86, 47, 8),
           title: const Text(
             'السبحةالألكترونيه',
             style: TextStyle(
-                fontSize: 40, fontWeight: FontWeight.w200, color: Colors.white),
+                fontSize: 36, fontWeight: FontWeight.w200, color: Colors.white),
           ),
           centerTitle: true,
         ),

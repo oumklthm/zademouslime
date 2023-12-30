@@ -7,11 +7,6 @@ class Edkar extends StatefulWidget {
   State<Edkar> createState() => _MyWidgetState();
 }
 
-class Item {
-  final String Title; // Assurez-vous que le nom est correct
-  const Item({required this.Title});
-}
-
 class _MyWidgetState extends State<Edkar> {
   List<String> extractArray(String title) {
     List<String> titleParts = title.split("|");
@@ -28,13 +23,6 @@ class _MyWidgetState extends State<Edkar> {
 
   @override
   Widget build(BuildContext context) {
-    // Exemple de données pour illustrer la structure de itemsData
-    List<Item> itemsData = [
-      Item(Title: "2 | Contenu 1"),
-      Item(Title: "5 | Contenu 2"),
-      // ... Ajoutez d'autres éléments ici
-    ];
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -59,9 +47,10 @@ class _MyWidgetState extends State<Edkar> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
+                  
                   SizedBox(height: 5),
                   Container(
-                    height: 59,
+                    height: 70,
                     width: 350,
                     margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
                     decoration: BoxDecoration(
@@ -73,18 +62,15 @@ class _MyWidgetState extends State<Edkar> {
                       ),
                     ),
                     padding: const EdgeInsets.all(20),
-                    child: InkWell(
-                      onTap: () {
-                        // Utilisez la fonction extractArray pour obtenir le contenu et le count.
-                        List<String> array = extractArray(itemsData[0].Title); // Assurez-vous d'accéder au bon élément
-                        // Imprimez les données extraites dans la console.
-                        print("Count: ${array[0]}, Contenu: ${array[1]}");
-                      },
-                      child: const Column(
-                        children: [
-                          // Ajoutez vos widgets ici.
-                        ],
-                      ),
+                    child: const Column(
+                      
+                      children: [
+                        Text(" تكرار ",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontStyle: FontStyle.normal,
+                            )),
+                      ],
                     ),
                   ),
                 ],

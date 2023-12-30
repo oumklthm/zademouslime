@@ -23,7 +23,7 @@ class _MyWidgetState extends State<elquerane> {
     return Scaffold(
       appBar: AppBar(
         
-        title: const Center(child: Text('بسم الله رحم رحيم',
+        title: const Center(child: Text('السور',
           style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.w800,

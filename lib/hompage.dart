@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:edkarymeslime/deae.dart';
+
 import 'package:edkarymeslime/edkar.dart';
 import 'package:edkarymeslime/elquerane.dart';
+import 'package:edkarymeslime/requeacharaya.dart';
 import 'package:edkarymeslime/sebaha.dart';
 import 'package:flutter/material.dart';
 
@@ -386,11 +387,12 @@ class _MyWidgetState extends State<Hompage> {
                 ),
                 InkWell(
                   onTap: () async {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const Edkar(),
-                      ),
-                    );
+                Navigator.of(context).push(
+  MaterialPageRoute(
+    builder: (context) => Edkar(),
+  ),
+);
+
                   },
                   child: SizedBox(
                     height: 360,
